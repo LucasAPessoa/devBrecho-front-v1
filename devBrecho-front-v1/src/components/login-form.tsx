@@ -31,8 +31,17 @@ export function LoginForm({
         toggleShowPassword,
         isLoading,
         handleLogin,
+
+        isAuthenticated,
     } = useAuth();
 
+    if (isLoading) {
+        return <Spinner />;
+    }
+
+    if (isAuthenticated) {
+        return <Spinner />;
+    }
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card>
