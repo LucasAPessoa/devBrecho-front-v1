@@ -4,12 +4,12 @@ import { AppSidebar } from "../app-sidebar";
 
 export function AppLayout() {
     return (
-        <SidebarProvider>
+        <SidebarProvider defaultOpen={false}>
             <AppSidebar variant="floating" />
             <main className="w-full">
                 <SidebarTrigger />
-                <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-                    <div className="w-full ">
+                <div className="w-full min-h-svh p-4 md:p-6 lg:p-8">
+                    <div className="w-full max-w-7xl mx-auto">
                         <Outlet />
                     </div>
                 </div>
