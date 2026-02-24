@@ -1,9 +1,4 @@
-import {
-    useReactTable,
-    getCoreRowModel,
-    flexRender,
-    type ColumnDef,
-} from "@tanstack/react-table";
+import { flexRender, type ColumnDef } from "@tanstack/react-table";
 import {
     Table,
     TableBody,
@@ -12,37 +7,44 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import type { UseMutateFunction } from "@tanstack/react-query";
-import type { Bag, BagFormData } from "@/services/bagsService";
+import { cn } from "@/lib/utils";
+import { useDataTable } from "@/hooks/useDataTable";
+
+type TableColumnMeta = {
+    headerClassName?: string;
+    cellClassName?: string;
+};
 
 interface DataTableProps<TData, TValue> {
     data: TData[];
     columns: ColumnDef<TData, TValue>[];
-    handleOpenModal?: () => void;
-    handleCreate?: () => UseMutateFunction<Bag, Error, BagFormData, unknown>;
+    containerClassName?: string;
 }
 
 export function DataTable<TData, TValue>({
     data,
     columns,
-    handleOpenModal,
-    handleCreate,
+    containerClassName,
 }: DataTableProps<TData, TValue>) {
-    const table = useReactTable({
+    const { table } = useDataTable({
         data,
         columns,
-        getCoreRowModel: getCoreRowModel(),
     });
 
     return (
-        <div className="rounded-md border">
+        <div className={cn("rounded-md border", containerClassName)}>
             <Table>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
                             {headerGroup.headers.map((header) => {
+                                const meta = header.column.columnDef
+                                    .meta as TableColumnMeta;
                                 return (
-                                    <TableHead key={header.id}>
+                                    <TableHead
+                                        key={header.id}
+                                        className={meta?.headerClassName}
+                                    >
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
@@ -63,14 +65,22 @@ export function DataTable<TData, TValue>({
                                 key={row.id}
                                 data-state={row.getIsSelected() && "selected"}
                             >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext(),
-                                        )}
-                                    </TableCell>
-                                ))}
+                                {row.getVisibleCells().map((cell) => {
+                                    const meta = cell.column.columnDef
+                                        .meta as TableColumnMeta;
+
+                                    return (
+                                        <TableCell
+                                            key={cell.id}
+                                            className={meta?.cellClassName}
+                                        >
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext(),
+                                            )}
+                                        </TableCell>
+                                    );
+                                })}
                             </TableRow>
                         ))
                     ) : (

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
 import * as bolsasApi from "@/services/bagsService";
+import { toast } from "sonner";
 
 export const useBags = (query?: string) => {
     const queryClient = useQueryClient();
@@ -15,24 +15,36 @@ export const useBags = (query?: string) => {
         queryFn: () => bolsasApi.getAllBags(query || ""),
     });
 
-    const { mutate: createBag, isPending: isCreating } = useMutation({
+    const { mutate: createBag, isPending: isCreatingBag } = useMutation({
         mutationFn: bolsasApi.createBag,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["bags"] });
+            toast.success("Bolsa criada com sucesso!");
+        },
+        onError: () => {
+            toast.error("Erro ao criar bolsa.");
         },
     });
 
-    const { mutate: deleteBag, isPending: isDeleting } = useMutation({
+    const { mutate: deleteBag, isPending: isDeletingBag } = useMutation({
         mutationFn: bolsasApi.deleteBag,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["bags"] });
+            toast.success("Bolsa removida com sucesso!");
+        },
+        onError: () => {
+            toast.error("Erro ao remover bolsa.");
         },
     });
 
-    const { mutate: updateBag, isPending: isUpdating } = useMutation({
+    const { mutate: updateBag, isPending: isUpdatingBag } = useMutation({
         mutationFn: bolsasApi.updateBag,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["bags"] });
+            toast.success("Bolsa atualizada com sucesso!");
+        },
+        onError: () => {
+            toast.error("Erro ao atualizar bolsa.");
         },
     });
 
@@ -40,6 +52,9 @@ export const useBags = (query?: string) => {
         mutationFn: bolsasApi.setStatusBag,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["bags"] });
+        },
+        onError: () => {
+            toast.error("Erro ao atualizar status da bolsa.");
         },
     });
 
@@ -64,11 +79,11 @@ export const useBags = (query?: string) => {
         errorBags: error,
 
         createBag,
-        isCreatingBag: isCreating,
+        isCreatingBag,
         deleteBag,
-        isDeletingBag: isDeleting,
+        isDeletingBag,
         updateBag,
-        isUpdatingBag: isUpdating,
+        isUpdatingBag,
         setStatusBag,
         isChangingStatusBag: isChangingStatus,
         getDoadaEDevolvidaBags,
