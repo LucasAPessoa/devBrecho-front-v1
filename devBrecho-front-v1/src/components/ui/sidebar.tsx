@@ -232,7 +232,12 @@ function Sidebar({
             <div
                 data-slot="sidebar-gap"
                 className={cn(
-                    "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
+                    "relative bg-transparent transition-[width] duration-200 ease-linear",
+                    // For floating/inset variants, don't reserve horizontal space;
+                    // the sidebar should overlay the content instead of pushing it.
+                    variant === "floating" || variant === "inset"
+                        ? "w-0"
+                        : "w-(--sidebar-width)",
                     "group-data-[collapsible=offcanvas]:w-0",
                     "group-data-[side=right]:rotate-180",
                     variant === "floating" || variant === "inset"
@@ -280,7 +285,7 @@ function SidebarTrigger({
             data-slot="sidebar-trigger"
             variant="ghost"
             size="icon"
-            className={cn("size-7", className)}
+            className={cn("size-7 relative z-20 mt-4 ml-4", className)}
             onClick={(event) => {
                 onClick?.(event);
                 toggleSidebar();

@@ -43,7 +43,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar {...props}>
             <SidebarHeader>
-                <div className="flex items-center gap-2 px-4 py-2">
+                <div className="flex items-center gap-2 px-4 pt-8">
                     <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
                         DB
                     </div>
