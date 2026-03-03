@@ -96,7 +96,7 @@ export function BagForm({ bagToEdit, onSuccess }: BagFormProps) {
     const onSubmit = (data: BagFormValues) => {
         const codigosDasPecas = data.codigosDasPecasRaw
             ? data.codigosDasPecasRaw
-                  .split(/[\n,]+/) // Split by newline or comma
+                  .split(/[\n,]+/)
                   .map((c) => c.trim())
                   .filter((c) => c.length > 0)
             : [];
@@ -152,7 +152,7 @@ export function BagForm({ bagToEdit, onSuccess }: BagFormProps) {
                                   )?.codigo +
                                   ")"
                                 : "Selecione uma fornecedora..."}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 " />
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[400px] p-0">
@@ -211,8 +211,7 @@ export function BagForm({ bagToEdit, onSuccess }: BagFormProps) {
                         >
                             {selectedSetorId
                                 ? sectors?.find(
-                                      (s) =>
-                                          s.setorId === selectedSetorId,
+                                      (s) => s.setorId === selectedSetorId,
                                   )?.nome
                                 : "Selecione um setor..."}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
