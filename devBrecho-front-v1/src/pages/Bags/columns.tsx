@@ -48,17 +48,6 @@ function columns({
         },
 
         {
-            accessorKey: "quantidadeDePecasSemCadastro",
-            header: ({ column }) => (
-                <SortableHeader
-                    column={column}
-                    label="Qtd. Peças S/ Cadastro"
-                />
-            ),
-            cell: (info) => <span>{info.getValue() as string}</span>,
-        },
-
-        {
             id: "totalDePecas",
             accessorFn: (row) => {
                 const quantidadeSemCadastro =
@@ -71,6 +60,14 @@ function columns({
                 <SortableHeader column={column} label="Total de Peças" />
             ),
             cell: (info) => <span>{info.getValue() as number}</span>,
+        },
+
+        {
+            accessorKey: "quantidadeDePecasSemCadastro",
+            header: ({ column }) => (
+                <SortableHeader column={column} label="S/ Cadastro" />
+            ),
+            cell: (info) => <span>{info.getValue() as string}</span>,
         },
 
         {
