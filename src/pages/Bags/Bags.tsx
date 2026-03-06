@@ -10,6 +10,7 @@ import { type Bag } from "@/types/entities";
 import { BagSheet } from "./components/BagSheet";
 import { useBagStatusActions } from "./hooks/useBagStatusActions";
 import { PlusIcon } from "lucide-react";
+import { addDays } from "date-fns";
 
 export function Bags() {
     const { bags, setStatusBag, archiveBag } = useBags();
@@ -17,6 +18,32 @@ export function Bags() {
     const [selectedBag, setSelectedBag] = useState<Bag | null>(null);
     const [searchValue, setSearchValue] = useState("");
     const { handleStatusChange } = useBagStatusActions({ setStatusBag });
+    const getRowClassName = (bag: Bag) => {
+        if (bag.statusDoada) {
+            return "bg-pink-200";
+        }
+
+        if (bag.statusDevolvida) {
+            return "bg-blue-200";
+        }
+
+        const messageValue = bag.dataMensagem?.trim();
+        if (!messageValue) {
+            return undefined;
+        }
+
+        const messageDate = new Date(messageValue);
+        const isValidDate = !Number.isNaN(messageDate.getTime());
+
+        if (isValidDate) {
+            const deadline = addDays(messageDate, 15);
+            if (deadline.getTime() < Date.now()) {
+                return "bg-red-200";
+            }
+        }
+
+        return "bg-yellow-200";
+    };
 
     const handleCreate = () => {
         setSelectedBag(null);
@@ -49,6 +76,7 @@ export function Bags() {
                     containerClassName={DEFAULT_TABLE_CONTAINER_CLASS}
                     globalFilter={searchValue}
                     onGlobalFilterChange={setSearchValue}
+                    getRowClassName={getRowClassName}
                     columns={columns({
                         handleEdit,
                         handleStatusChange,
