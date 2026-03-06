@@ -81,10 +81,10 @@ export const useBags = (query?: string) => {
     });
 
     const {
-        mutateAsync: getDoadaEDevolvidaBags,
-        isPending: isGettingDoadasEDevolvidas,
+        mutateAsync: getArchivedBagsBySupplier,
+        isPending: isGettingArchivedBags,
     } = useMutation({
-        mutationFn: bolsasApi.getDoadaEDevolvidaBags,
+        mutationFn: bolsasApi.getArchivedBagsBySupplier,
     });
 
     const {
