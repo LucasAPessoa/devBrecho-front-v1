@@ -2,6 +2,7 @@ import { DataTable } from "@/components/data-table";
 import { DEFAULT_TABLE_CONTAINER_CLASS } from "@/components/table/constants";
 import { TableViewport } from "@/components/table/table-viewport";
 import { Button } from "@/components/ui/button";
+import { SearchBox } from "@/components/ui/search-box";
 import { columns } from "./columns";
 import { useSuppliers } from "@/hooks/useSuppliers";
 import { useState } from "react";
@@ -20,6 +21,7 @@ export function Suppliers() {
     const [historySupplier, setHistorySupplier] = useState<Supplier | null>(
         null,
     );
+    const [searchValue, setSearchValue] = useState("");
 
     const handleCreate = () => {
         setSelectedSupplier(null);
@@ -53,10 +55,14 @@ export function Suppliers() {
                 </Button>
             </div>
 
+            <SearchBox value={searchValue} onValueChange={setSearchValue} />
+
             <TableViewport>
                 <DataTable
                     data={suppliers ?? []}
                     containerClassName={DEFAULT_TABLE_CONTAINER_CLASS}
+                    globalFilter={searchValue}
+                    onGlobalFilterChange={setSearchValue}
                     columns={columns({
                         handleEdit,
                         handleDelete,

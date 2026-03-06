@@ -2,6 +2,7 @@ import { DataTable } from "@/components/data-table";
 import { DEFAULT_TABLE_CONTAINER_CLASS } from "@/components/table/constants";
 import { TableViewport } from "@/components/table/table-viewport";
 import { Button } from "@/components/ui/button";
+import { SearchBox } from "@/components/ui/search-box";
 import { columns } from "./columns";
 import { useSectors } from "@/hooks/useSectors";
 import { useState } from "react";
@@ -13,6 +14,7 @@ export function Sectors() {
     const { sectors, deleteSector } = useSectors();
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [selectedSector, setSelectedSector] = useState<Sector | null>(null);
+    const [searchValue, setSearchValue] = useState("");
 
     const handleCreate = () => {
         setSelectedSector(null);
@@ -39,10 +41,14 @@ export function Sectors() {
                 </Button>
             </div>
 
+            <SearchBox value={searchValue} onValueChange={setSearchValue} />
+
             <TableViewport>
                 <DataTable
                     data={sectors ?? []}
                     containerClassName={DEFAULT_TABLE_CONTAINER_CLASS}
+                    globalFilter={searchValue}
+                    onGlobalFilterChange={setSearchValue}
                     columns={columns({
                         handleEdit,
                         handleDelete,
