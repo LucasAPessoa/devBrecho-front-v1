@@ -2,6 +2,7 @@ import { DataTable } from "@/components/data-table";
 import { DEFAULT_TABLE_CONTAINER_CLASS } from "@/components/table/constants";
 import { TableViewport } from "@/components/table/table-viewport";
 import { Button } from "@/components/ui/button";
+import { SearchBox } from "@/components/ui/search-box";
 import columns from "./columns";
 import { useBags } from "@/hooks/useBags";
 import { useState } from "react";
@@ -14,6 +15,7 @@ export function Bags() {
     const { bags, setStatusBag, archiveBag } = useBags();
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [selectedBag, setSelectedBag] = useState<Bag | null>(null);
+    const [searchValue, setSearchValue] = useState("");
     const { handleStatusChange } = useBagStatusActions({ setStatusBag });
 
     const handleCreate = () => {
@@ -39,10 +41,14 @@ export function Bags() {
                 </Button>
             </div>
 
+            <SearchBox value={searchValue} onValueChange={setSearchValue} />
+
             <TableViewport>
                 <DataTable
                     data={bags ?? []}
                     containerClassName={DEFAULT_TABLE_CONTAINER_CLASS}
+                    globalFilter={searchValue}
+                    onGlobalFilterChange={setSearchValue}
                     columns={columns({
                         handleEdit,
                         handleStatusChange,

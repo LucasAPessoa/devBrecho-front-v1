@@ -19,16 +19,22 @@ interface DataTableProps<TData, TValue> {
     data: TData[];
     columns: ColumnDef<TData, TValue>[];
     containerClassName?: string;
+    globalFilter?: string;
+    onGlobalFilterChange?: (value: string) => void;
 }
 
 export function DataTable<TData, TValue>({
     data,
     columns,
     containerClassName,
+    globalFilter,
+    onGlobalFilterChange,
 }: DataTableProps<TData, TValue>) {
     const { table } = useDataTable({
         data,
         columns,
+        globalFilter,
+        onGlobalFilterChange,
     });
 
     return (
