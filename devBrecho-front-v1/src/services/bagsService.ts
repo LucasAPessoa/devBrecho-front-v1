@@ -44,6 +44,14 @@ export const setStatusBag = async ({
     await api.patch(`/bolsas/${bolsaId}/status`, payload);
 };
 
+export const archiveBag = async (bolsaId: number): Promise<void> => {
+    await api.patch(`/bolsas/${bolsaId}/archive`);
+};
+
+export const unarchiveBag = async (bolsaId: number): Promise<void> => {
+    await api.patch(`/bolsas/${bolsaId}/unarchive`);
+};
+
 export const updateBag = async ({
     id,
     dadosAtualizados,
@@ -59,12 +67,10 @@ export const deleteBag = async (id: number): Promise<void> => {
     await api.delete(`/bolsas/${id}`);
 };
 
-export const getDoadaEDevolvidaBags = async (
+export const getArchivedBagsBySupplier = async (
     fornecedoraId: number,
 ): Promise<Bag[]> => {
-    const { data } = await api.get<Bag[]>(
-        `/bolsas/doadasEDevolvidas/${fornecedoraId}`,
-    );
+    const { data } = await api.get<Bag[]>(`/bolsas/archived/${fornecedoraId}`);
     return data;
 };
 
