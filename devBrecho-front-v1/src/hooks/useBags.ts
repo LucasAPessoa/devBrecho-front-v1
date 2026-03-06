@@ -58,6 +58,17 @@ export const useBags = (query?: string) => {
         },
     });
 
+    const { mutate: archiveBag, isPending: isArchivingBag } = useMutation({
+        mutationFn: bolsasApi.archiveBag,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["bags"] });
+            toast.success("Bolsa arquivada com sucesso!");
+        },
+        onError: () => {
+            toast.error("Erro ao arquivar bolsa.");
+        },
+    });
+
     const {
         mutateAsync: getDoadaEDevolvidaBags,
         isPending: isGettingDoadasEDevolvidas,
