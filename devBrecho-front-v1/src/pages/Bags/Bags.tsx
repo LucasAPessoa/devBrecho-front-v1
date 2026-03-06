@@ -11,7 +11,7 @@ import { useBagStatusActions } from "./hooks/useBagStatusActions";
 import { PlusIcon } from "lucide-react";
 
 export function Bags() {
-    const { bags, setStatusBag } = useBags();
+    const { bags, setStatusBag, archiveBag } = useBags();
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [selectedBag, setSelectedBag] = useState<Bag | null>(null);
     const { handleStatusChange } = useBagStatusActions({ setStatusBag });
@@ -24,6 +24,10 @@ export function Bags() {
     const handleEdit = (bag: Bag) => {
         setSelectedBag(bag);
         setIsSheetOpen(true);
+    };
+
+    const handleArchive = (bag: Bag) => {
+        archiveBag(bag.bolsaId);
     };
 
     return (
@@ -42,6 +46,7 @@ export function Bags() {
                     columns={columns({
                         handleEdit,
                         handleStatusChange,
+                        handleArchive,
                     })}
                 />
             </TableViewport>
