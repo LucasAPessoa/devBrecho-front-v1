@@ -38,6 +38,7 @@ export interface Bag {
     observacoes?: string | null;
     statusDevolvida?: boolean | null;
     statusDoada?: boolean | null;
+    isArchived?: boolean | null;
     updatedAt?: string | null;
 
     fornecedoraId: number;
