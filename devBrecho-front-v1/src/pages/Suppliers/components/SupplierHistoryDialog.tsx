@@ -8,6 +8,9 @@ import {
 import { useBags } from "@/hooks/useBags";
 import type { Supplier, Bag } from "@/types/entities";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 
 // Helper for date formatting using native API
 const formatDate = (dateString?: string | null) => {
@@ -32,18 +35,20 @@ export function SupplierHistoryDialog({
     open,
     onOpenChange,
 }: SupplierHistoryDialogProps) {
-    const { getDoadaEDevolvidaBags, isGettingDoadasEDevolvidas } = useBags();
+    const { getArchivedBagsBySupplier, isGettingArchivedBags, unarchiveBag } =
+        useBags();
     const [historyBags, setHistoryBags] = useState<Bag[]>([]);
+    const [unarchivingId, setUnarchivingId] = useState<number | null>(null);
 
     useEffect(() => {
         if (open && supplier) {
-            getDoadaEDevolvidaBags(supplier.fornecedoraId)
+            getArchivedBagsBySupplier(supplier.fornecedoraId)
                 .then((data) => {
                     setHistoryBags(data);
                 })
                 .catch(console.error);
         }
-    }, [open, supplier, getDoadaEDevolvidaBags]);
+    }, [open, supplier, getArchivedBagsBySupplier]);
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -71,13 +76,13 @@ export function SupplierHistoryDialog({
                 </DialogHeader>
 
                 <div className="space-y-4 mt-4">
-                    {isGettingDoadasEDevolvidas ? (
+                    {isGettingArchivedBags ? (
                         <p className="text-center py-4">
-                            Carregando histórico...
+                            Carregando bolsas arquivadas...
                         </p>
                     ) : historyBags.length === 0 ? (
                         <p className="text-center py-4 text-muted-foreground">
-                            Nenhuma bolsa encontrada no histórico.
+                            Nenhuma bolsa arquivada encontrada.
                         </p>
                     ) : (
                         <div className="grid gap-4">
@@ -102,8 +107,84 @@ export function SupplierHistoryDialog({
                                                     Devolvida
                                                 </span>
                                             )}
+                                            {bag.isArchived && (
+                                                <span className="bg-muted text-muted-foreground text-xs px-2 py-1 rounded">
+                                                    Arquivada
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
+
+                                    {bag.isArchived && (
+                                        <div className="mb-4 flex justify-end">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                disabled={
+                                                    unarchivingId ===
+                                                    bag.bolsaId
+                                                }
+                                                onClick={() => {
+                                                    setUnarchivingId(
+                                                        bag.bolsaId,
+                                                    );
+                                                    unarchiveBag(bag.bolsaId, {
+                                                        onSuccess: () => {
+                                                            setHistoryBags(
+                                                                (prev) =>
+                                                                    prev.filter(
+                                                                        (
+                                                                            item,
+                                                                        ) =>
+                                                                            item.bolsaId !==
+                                                                            bag.bolsaId,
+                                                                    ),
+                                                            );
+                                                            toast.success(
+                                                                "Bolsa desarquivada com sucesso!",
+                                                            );
+                                                        },
+                                                        onError: (error) => {
+                                                            const message =
+                                                                (
+                                                                    error as {
+                                                                        response?: {
+                                                                            data?: {
+                                                                                message?: string;
+                                                                            };
+                                                                        };
+                                                                        message?: string;
+                                                                    }
+                                                                )?.response
+                                                                    ?.data
+                                                                    ?.message ||
+                                                                (error as Error)
+                                                                    ?.message ||
+                                                                "Erro ao desarquivar bolsa.";
+                                                            toast.error(
+                                                                message,
+                                                            );
+                                                        },
+                                                        onSettled: () => {
+                                                            setUnarchivingId(
+                                                                null,
+                                                            );
+                                                        },
+                                                    });
+                                                }}
+                                            >
+                                                {unarchivingId ===
+                                                bag.bolsaId ? (
+                                                    <span className="flex items-center gap-2">
+                                                        <Spinner className="size-4" />
+                                                        Desarquivando...
+                                                    </span>
+                                                ) : (
+                                                    "Desarquivar bolsa"
+                                                )}
+                                            </Button>
+                                        </div>
+                                    )}
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
