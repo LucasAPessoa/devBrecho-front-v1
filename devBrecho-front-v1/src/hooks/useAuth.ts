@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { login } from "../services/authService";
+import { login, profile } from "../services/authService";
 import type { AxiosError } from "axios";
 
 interface ErrorResponse {
@@ -18,12 +18,15 @@ export const useAuth = () => {
 
     const navigateTo = useNavigate();
 
+    const queryClient = useQueryClient();
+
     const { mutate: loginMutation, isPending: isLoggingIn } = useMutation({
         mutationFn: login,
 
         onSuccess: (data) => {
             localStorage.setItem("token", data.token);
             toast.success(data.message);
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
 
             navigateTo("/bolsas");
         },
@@ -33,6 +36,20 @@ export const useAuth = () => {
             toast.error(message);
         },
     });
+
+    const { data: userData, isLoading: isFetchingProfile } = useQuery({
+        queryKey: ["profile"],
+        queryFn: profile,
+        enabled: !!localStorage.getItem("token"),
+        retry: false,
+        staleTime: Infinity,
+    });
+
+    useEffect(() => {
+        if (!isFetchingProfile && userData) {
+            navigateTo("/bolsas");
+        }
+    }, [userData, isFetchingProfile, navigateTo]);
 
     const handleLogin = (e: React.SyntheticEvent) => {
         e.preventDefault();
@@ -55,7 +72,11 @@ export const useAuth = () => {
         showPassword,
         toggleShowPassword: () => setShowPassword(!showPassword),
 
-        isLoading: isLoggingIn,
+        isLoading: isLoggingIn || isFetchingProfile,
         handleLogin,
+
+        user: userData,
+
+        isAuthenticated: !!userData,
     };
 };
