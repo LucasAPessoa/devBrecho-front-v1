@@ -21,6 +21,7 @@ interface DataTableProps<TData, TValue> {
     containerClassName?: string;
     globalFilter?: string;
     onGlobalFilterChange?: (value: string) => void;
+    getRowClassName?: (row: TData) => string | undefined;
 }
 
 export function DataTable<TData, TValue>({
@@ -29,6 +30,7 @@ export function DataTable<TData, TValue>({
     containerClassName,
     globalFilter,
     onGlobalFilterChange,
+    getRowClassName,
 }: DataTableProps<TData, TValue>) {
     const { table } = useDataTable({
         data,
@@ -70,6 +72,7 @@ export function DataTable<TData, TValue>({
                             <TableRow
                                 key={row.id}
                                 data-state={row.getIsSelected() && "selected"}
+                                className={cn(getRowClassName?.(row.original))}
                             >
                                 {row.getVisibleCells().map((cell) => {
                                     const meta = cell.column.columnDef
