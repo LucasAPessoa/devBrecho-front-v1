@@ -7,7 +7,12 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { PencilIcon, CheckCircleIcon, GiftIcon } from "lucide-react";
+import {
+    ArchiveIcon,
+    PencilIcon,
+    CheckCircleIcon,
+    GiftIcon,
+} from "lucide-react";
 import { SortableHeader } from "@/components/table/sortable-header";
 import { STICKY_ACTION_COLUMN_META } from "@/components/table/constants";
 import { TableActionCell } from "@/components/table/table-action-cell";
@@ -15,9 +20,11 @@ import { TableActionCell } from "@/components/table/table-action-cell";
 function columns({
     handleEdit,
     handleStatusChange,
+    handleArchive,
 }: {
     handleEdit: (bag: Bag) => void;
     handleStatusChange: (bag: Bag, status: "devolvida" | "doada") => void;
+    handleArchive: (bag: Bag) => void;
 }): ColumnDef<Bag>[] {
     return [
         {
@@ -171,42 +178,71 @@ function columns({
                     >
                         <PencilIcon className="h-4 w-4" />
                     </Button>
-                    <Button
-                        variant={
-                            props.row.original.statusDevolvida
-                                ? "default"
-                                : "outline"
-                        }
-                        size="icon"
-                        title={
-                            props.row.original.statusDevolvida
-                                ? "Desmarcar Devolvida"
-                                : "Marcar como Devolvida"
-                        }
-                        onClick={() =>
-                            handleStatusChange(props.row.original, "devolvida")
-                        }
-                    >
-                        <CheckCircleIcon className="h-4 w-4" />
-                    </Button>
-                    <Button
-                        variant={
-                            props.row.original.statusDoada
-                                ? "default"
-                                : "outline"
-                        }
-                        size="icon"
-                        title={
-                            props.row.original.statusDoada
-                                ? "Desmarcar Doada"
-                                : "Marcar como Doada"
-                        }
-                        onClick={() =>
-                            handleStatusChange(props.row.original, "doada")
-                        }
-                    >
-                        <GiftIcon className="h-4 w-4" />
-                    </Button>
+                    {props.row.original.statusDoada ||
+                    props.row.original.statusDevolvida ? (
+                        <Button
+                            variant={
+                                props.row.original.isArchived
+                                    ? "default"
+                                    : "outline"
+                            }
+                            size="icon"
+                            title={
+                                props.row.original.isArchived
+                                    ? "Bolsa arquivada"
+                                    : "Arquivar bolsa"
+                            }
+                            disabled={props.row.original.isArchived ?? false}
+                            onClick={() => handleArchive(props.row.original)}
+                        >
+                            <ArchiveIcon className="h-4 w-4" />
+                        </Button>
+                    ) : (
+                        <>
+                            <Button
+                                variant={
+                                    props.row.original.statusDevolvida
+                                        ? "default"
+                                        : "outline"
+                                }
+                                size="icon"
+                                title={
+                                    props.row.original.statusDevolvida
+                                        ? "Desmarcar Devolvida"
+                                        : "Marcar como Devolvida"
+                                }
+                                onClick={() =>
+                                    handleStatusChange(
+                                        props.row.original,
+                                        "devolvida",
+                                    )
+                                }
+                            >
+                                <CheckCircleIcon className="h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant={
+                                    props.row.original.statusDoada
+                                        ? "default"
+                                        : "outline"
+                                }
+                                size="icon"
+                                title={
+                                    props.row.original.statusDoada
+                                        ? "Desmarcar Doada"
+                                        : "Marcar como Doada"
+                                }
+                                onClick={() =>
+                                    handleStatusChange(
+                                        props.row.original,
+                                        "doada",
+                                    )
+                                }
+                            >
+                                <GiftIcon className="h-4 w-4" />
+                            </Button>
+                        </>
+                    )}
                 </TableActionCell>
             ),
         },
