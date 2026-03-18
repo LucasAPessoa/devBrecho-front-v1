@@ -6,6 +6,7 @@ import { Sectors } from "./pages/Sectors/Sectors";
 import { Suppliers } from "./pages/Suppliers/Suppliers";
 import { Bags } from "./pages/Bags/Bags";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
+import { Deadlines } from "./pages/Deadlines";
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/bolsas" element={<Bags />} />
                 <Route path="/setores" element={<Sectors />} />
                 <Route path="/fornecedoras" element={<Suppliers />} />
+                <Route path="/prazos" element={<Deadlines />} />
             </Route>
         </Routes>
     );

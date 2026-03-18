@@ -1,4 +1,4 @@
-import { ShoppingBag, Tags, Truck, LayoutDashboard } from "lucide-react";
+import { ShoppingBag, Tags, Truck, LayoutDashboard, CalendarClock } from "lucide-react";
 
 import {
     Sidebar,
@@ -34,6 +34,11 @@ const items = [
         title: "Setores",
         url: "/setores",
         icon: Tags,
+    },
+    {
+        title: "Prazos",
+        url: "/prazos",
+        icon: CalendarClock,
     },
 ];
 
