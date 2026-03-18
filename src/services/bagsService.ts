@@ -84,13 +84,13 @@ export const searchBags = async (query: string): Promise<Bag[]> => {
 export const getBagGroupedByDataMensagem = async (): Promise<
     {
         date: string;
-        bags: Bag[];
+        bolsas: Bag[];
     }[]
 > => {
     const { data } = await api.get<
         {
             date: string;
-            bags: Bag[];
+            bolsas: Bag[];
         }[]
     >("/bolsas/groupedByDataMensagem");
     return data;

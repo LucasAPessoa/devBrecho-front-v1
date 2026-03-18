@@ -12,12 +12,11 @@ import { CalendarClock } from "lucide-react";
 
 type GroupedBags = {
     date: string;
-    bags: Bag[];
+    bolsas?: Bag[];
 };
 
 export function Deadlines() {
-    const { getBagGroupedByDataMensagem, setStatusBag, archiveBag } =
-        useBags();
+    const { getBagGroupedByDataMensagem, setStatusBag, archiveBag } = useBags();
     const [groups, setGroups] = useState<GroupedBags[]>([]);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [selectedBag, setSelectedBag] = useState<Bag | null>(null);
@@ -25,7 +24,22 @@ export function Deadlines() {
     const { handleStatusChange } = useBagStatusActions({ setStatusBag });
 
     useEffect(() => {
-        getBagGroupedByDataMensagem().then(setGroups).catch(console.error);
+        getBagGroupedByDataMensagem()
+            .then((data) =>
+                setGroups(
+                    (data ?? [])
+                        .map((group) => ({
+                            ...group,
+                            bolsas: group.bolsas ?? [],
+                        }))
+                        .sort(
+                            (a, b) =>
+                                new Date(a.date).getTime() -
+                                new Date(b.date).getTime(),
+                        ),
+                ),
+            )
+            .catch(console.error);
     }, []);
 
     const handleEdit = (bag: Bag) => {
@@ -52,7 +66,7 @@ export function Deadlines() {
                 </p>
             )}
 
-            {groups.map(({ date, bags }) => {
+            {groups.map(({ date, bolsas }) => {
                 const deadline = addDays(new Date(date), 15);
                 const isOverdue = isBefore(startOfDay(deadline), today);
                 const formattedDeadline = format(deadline, "dd/MM/yyyy");
@@ -74,7 +88,7 @@ export function Deadlines() {
 
                         <TableViewport>
                             <DataTable
-                                data={bags}
+                                data={bolsas ?? []}
                                 containerClassName={
                                     DEFAULT_TABLE_CONTAINER_CLASS
                                 }
