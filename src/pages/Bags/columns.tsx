@@ -12,6 +12,8 @@ import {
     PencilIcon,
     CheckCircleIcon,
     GiftIcon,
+    RotateCcwIcon,
+    XIcon,
 } from "lucide-react";
 import { SortableHeader } from "@/components/table/sortable-header";
 import { STICKY_ACTION_COLUMN_META } from "@/components/table/constants";
@@ -23,7 +25,11 @@ function columns({
     handleArchive,
 }: {
     handleEdit: (bag: Bag) => void;
-    handleStatusChange: (bag: Bag, status: "devolvida" | "doada") => void;
+    handleStatusChange: (
+        bag: Bag,
+        statusDoada: boolean,
+        statusDevolvida: boolean,
+    ) => void;
     handleArchive: (bag: Bag) => void;
 }): ColumnDef<Bag>[] {
     return [
@@ -180,23 +186,42 @@ function columns({
                     </Button>
                     {props.row.original.statusDoada ||
                     props.row.original.statusDevolvida ? (
-                        <Button
-                            variant={
-                                props.row.original.isArchived
-                                    ? "default"
-                                    : "outline"
-                            }
-                            size="icon"
-                            title={
-                                props.row.original.isArchived
-                                    ? "Bolsa arquivada"
-                                    : "Arquivar bolsa"
-                            }
-                            disabled={props.row.original.isArchived ?? false}
-                            onClick={() => handleArchive(props.row.original)}
-                        >
-                            <ArchiveIcon className="h-4 w-4" />
-                        </Button>
+                        <>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                title="Resetar status"
+                                onClick={() =>
+                                    handleStatusChange(
+                                        props.row.original,
+                                        false,
+                                        false,
+                                    )
+                                }
+                            >
+                                <span className="relative block h-4 w-4">
+                                    <RotateCcwIcon className="h-4 w-4" />
+                                    <XIcon className="absolute inset-0 m-auto h-2.5 w-2.5" />
+                                </span>
+                            </Button>
+                            <Button
+                                variant={
+                                    props.row.original.isArchived
+                                        ? "default"
+                                        : "outline"
+                                }
+                                size="icon"
+                                title={
+                                    props.row.original.isArchived
+                                        ? "Bolsa arquivada"
+                                        : "Arquivar bolsa"
+                                }
+                                disabled={props.row.original.isArchived ?? false}
+                                onClick={() => handleArchive(props.row.original)}
+                            >
+                                <ArchiveIcon className="h-4 w-4" />
+                            </Button>
+                        </>
                     ) : (
                         <>
                             <Button
@@ -214,7 +239,8 @@ function columns({
                                 onClick={() =>
                                     handleStatusChange(
                                         props.row.original,
-                                        "devolvida",
+                                        false,
+                                        !props.row.original.statusDevolvida,
                                     )
                                 }
                             >
@@ -235,7 +261,8 @@ function columns({
                                 onClick={() =>
                                     handleStatusChange(
                                         props.row.original,
-                                        "doada",
+                                        !props.row.original.statusDoada,
+                                        false,
                                     )
                                 }
                             >
