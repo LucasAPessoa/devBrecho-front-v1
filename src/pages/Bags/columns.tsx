@@ -186,6 +186,24 @@ function columns({
                     </Button>
                     {props.row.original.statusDoada ||
                     props.row.original.statusDevolvida ? (
+                        <>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                title="Resetar status"
+                                onClick={() =>
+                                    handleStatusChange(
+                                        props.row.original,
+                                        false,
+                                        false,
+                                    )
+                                }
+                            >
+                                <span className="relative block h-4 w-4">
+                                    <RotateCcwIcon className="h-4 w-4" />
+                                    <XIcon className="absolute inset-0 m-auto h-2.5 w-2.5" />
+                                </span>
+                            </Button>
                             <Button
                                 variant={
                                     props.row.original.isArchived
