@@ -16,19 +16,15 @@ interface UseBagStatusActionsParams {
 export function useBagStatusActions({
     setStatusBag,
 }: UseBagStatusActionsParams) {
-    const handleStatusChange = (bag: Bag, status: "devolvida" | "doada") => {
+    const handleStatusChange = (
+        bag: Bag,
+        statusDoada: boolean,
+        statusDevolvida: boolean,
+    ) => {
         const payload = {
-            statusDevolvida: bag.statusDevolvida ?? false,
-            statusDoada: bag.statusDoada ?? false,
+            statusDoada,
+            statusDevolvida,
         };
-
-        if (status === "devolvida") {
-            payload.statusDevolvida = !bag.statusDevolvida;
-            if (payload.statusDevolvida) payload.statusDoada = false;
-        } else {
-            payload.statusDoada = !bag.statusDoada;
-            if (payload.statusDoada) payload.statusDevolvida = false;
-        }
 
         setStatusBag({
             bolsaId: bag.bolsaId,
